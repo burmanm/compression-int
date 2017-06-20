@@ -66,19 +66,19 @@ public class Simple8 {
      * @return Amount of words written
      */
     public static int compress(long[] input, int inputPos, int amount, long[] output, int outputPos) {
-        int nextPos = inputPos;
-        for (int endPos = inputPos + amount; nextPos < endPos;) {
+        int startOutputPos = outputPos;
+        for (int endPos = inputPos + amount; inputPos < endPos;) {
             int integersToCompress = 0; // How many integers to compress to next word
             int maxBitsRequired, nextBitsRequired, toCompressBits; // How many bits per integer will be required
 
             // Find the maximum from following values
-            for (toCompressBits = nextBitsRequired = bits(input[nextPos]);
+            for (toCompressBits = nextBitsRequired = bits(input[inputPos]);
                  ((integersToCompress + 1) * (maxBitsRequired = Math.max(nextBitsRequired, toCompressBits))
                          <= AVAILABLE_BITS[maxBitsRequired]);
                     ) {
                 toCompressBits = maxBitsRequired;
-                if(nextPos + integersToCompress + 1 < endPos) {
-                    nextBitsRequired = bits(input[nextPos + ++integersToCompress]);
+                if(inputPos + integersToCompress + 1 < endPos) {
+                    nextBitsRequired = bits(input[inputPos + ++integersToCompress]);
                 } else {
                     ++integersToCompress;
                     break;
@@ -93,62 +93,69 @@ public class Simple8 {
 
             switch (toCompressBits) {
                 case 0:
+                    if(integersToCompress == 240) {
+                        encode0(input, inputPos, output, outputPos);
+                        inputPos += 240;
+                    } else {
+                        encode1(input, inputPos, output, outputPos);
+                        inputPos += 120;
+                    }
                     break;
                 case 1:
-                    encode2(input, nextPos, output, outputPos);
-                    nextPos += 60;
+                    encode2(input, inputPos, output, outputPos);
+                    inputPos += 60;
                     break;
                 case 2:
-                    encode3(input, nextPos, output, outputPos);
-                    nextPos += 30;
+                    encode3(input, inputPos, output, outputPos);
+                    inputPos += 30;
                     break;
                 case 3:
-                    encode4(input, nextPos, output, outputPos);
-                    nextPos += 20;
+                    encode4(input, inputPos, output, outputPos);
+                    inputPos += 20;
                     break;
                 case 4:
-                    encode5(input, nextPos, output, outputPos);
-                    nextPos += 15;
+                    encode5(input, inputPos, output, outputPos);
+                    inputPos += 15;
                     break;
                 case 5:
-                    encode6(input, nextPos, output, outputPos);
-                    nextPos += 12;
+                    encode6(input, inputPos, output, outputPos);
+                    inputPos += 12;
                     break;
                 case 6:
-                    encode7(input, nextPos, output, outputPos);
-                    nextPos += 10;
+                    encode7(input, inputPos, output, outputPos);
+                    inputPos += 10;
                     break;
                 case 7:
-                    encode8(input, nextPos, output, outputPos);
-                    nextPos += 8;
+                    encode8(input, inputPos, output, outputPos);
+                    inputPos += 8;
                     break;
                 case 8:
-                    encode9(input, nextPos, output, outputPos);
-                    nextPos += 7;
+                    encode9(input, inputPos, output, outputPos);
+                    inputPos += 7;
                     break;
                 case 9:
                 case 10:
-                    encode10(input, nextPos, output, outputPos);
-                    nextPos += 6;
+                    encode10(input, inputPos, output, outputPos);
+                    inputPos += 6;
                     break;
                 case 11:
                 case 12:
-                    encode11(input, nextPos, output, outputPos);
-                    nextPos += 5;
+                    encode11(input, inputPos, output, outputPos);
+                    inputPos += 5;
                     break;
                 case 13:
                 case 14:
                 case 15:
-                    encode12(input, nextPos, output, outputPos);
-                    nextPos += 4;
+                    encode12(input, inputPos, output, outputPos);
+                    inputPos += 4;
                     break;
                 case 16:
                 case 17:
                 case 18:
                 case 19:
                 case 20:
-                    encode13(input, nextPos, output, outputPos);
-                    nextPos += 3;
+                    encode13(input, inputPos, output, outputPos);
+                    inputPos += 3;
                     break;
                 case 21:
                 case 22:
@@ -160,8 +167,8 @@ public class Simple8 {
                 case 28:
                 case 29:
                 case 30:
-                    encode14(input, nextPos, output, outputPos);
-                    nextPos += 2;
+                    encode14(input, inputPos, output, outputPos);
+                    inputPos += 2;
                     break;
                 case 31:
                 case 32:
@@ -194,8 +201,8 @@ public class Simple8 {
                 case 59:
                 case 60:
                 case 61:
-                    encode15(input, nextPos, output, outputPos);
-                    nextPos += 1;
+                    encode15(input, inputPos, output, outputPos);
+                    inputPos += 1;
                     break;
                 default:
                     // TODO Handle this as an exception? Otherwise it's eternal loop..
@@ -204,7 +211,7 @@ public class Simple8 {
 
             outputPos++;
         }
-        return 0; // TODO FIX
+        return outputPos - startOutputPos;
     }
 
     public static void decompress(long[] input, int inputPos, int amount, long[] output, int outputPos) {
@@ -212,15 +219,13 @@ public class Simple8 {
         for (int endPos = inputPos + amount; inputPos < endPos; ) {
             int selector = (int) (input[inputPos] >>> 60);
 
-//            System.out.printf("selector: %d\n", selector);
-
             switch (selector) {
                 case 0:
-//                    decode0(input, inputPos, output, outputPos);
+                    decode0(input, inputPos, output, outputPos);
                     outputPos += 240;
                     break;
                 case 1:
-//                    decode1(input, inputPos, output, outputPos);
+                    decode1(input, inputPos, output, outputPos);
                     outputPos += 120;
                     break;
                 case 2:
@@ -286,7 +291,9 @@ public class Simple8 {
 
     // Encode functions - without mask as we already check the length of leadingZeros
 
-//    private static void encode0(final long[] input, int startPos, final long[] output, int outputPos) { }
+    private static void encode0(final long[] input, int startPos, final long[] output, int outputPos) {
+        output[outputPos] = 0;
+    }
 
     private static void encode1(final long[] input, int startPos, final long[] output, int outputPos) {
         output[outputPos] |= 1L << 60;
@@ -531,6 +538,17 @@ public class Simple8 {
     }
 
     // Decode functions
+    private static void decode0(final long[] input, int startPos, final long[] output, int outputPos) {
+        for(int i = 0; i < 240; i++) {
+            output[outputPos++] = 0;
+        }
+    }
+
+    private static void decode1(final long[] input, int startPos, final long[] output, int outputPos) {
+        for(int i = 0; i < 120; i++) {
+            output[outputPos++] = 0;
+        }
+    }
 
     private static void decode2(final long[] input, int startPos, final long[] output, int outputPos) {
         output[outputPos++] = (input[startPos] >>> 59) & 1;

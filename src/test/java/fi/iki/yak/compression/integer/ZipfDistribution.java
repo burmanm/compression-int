@@ -1,4 +1,4 @@
-package fi.iki.yak.compression.integer.integer;
+package fi.iki.yak.compression.integer;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.IntStream;
