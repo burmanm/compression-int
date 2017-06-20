@@ -21,10 +21,10 @@ package fi.iki.yak.compression.integer.integer;
  *
  * This implementation uses a different logic to find optimal solution than the one in the reference implementation
  *
- * Selector         & 0   & 1   & 2  & 3  & 4  & 5  & 6  & 7  & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15
- * Integers         & 240 & 120 & 60 & 30 & 20 & 15 & 12 & 10 & 8 & 7 & 6  & 5  & 4  & 3  & 2  & 1
- * Bits per integer & 0   & 0   & 1  & 2  & 3  & 4  & 5  & 6  & 7 & 8 & 10 & 12 & 15 & 20 & 30 & 60
- * Wasted bits      & 60  & 60  & 0  & 0  & 0  & 0  & 0  & 0  & 4 & 4 & 0  & 0  & 0  & 0  & 0  & 0
+ * Selector           0     1     2    3    4    5    6    7    8   9   10   11   12   13   14   15
+ * Integers           240   120   60   30   20   15   12   10   8   7   6    5    4    3    2    1
+ * Bits per integer   0     0     1    2    3    4    5    6    7   8   10   12   15   20   30   60
+ * Wasted bits        60    60    0    0    0    0    0    0    4   4   0    0    0    0    0    0
  *
  * @author Michael Burman
  */
