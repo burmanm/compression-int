@@ -31,7 +31,7 @@ package fi.iki.yak.compression.integer.integer;
 public class Simple8 {
 
     private static int[]
-            AVAILABLE_BITS = {120, 60, 60, 60, 60, 60, 56, 56, 54, 60, 55, 60, 52, 56, 60, 48, 51, 54, 57, 60,
+            AVAILABLE_BITS = {120, 60, 60, 60, 60, 60, 60, 56, 56, 54, 60, 55, 60, 52, 56, 60, 48, 51, 54, 57, 60,
             42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
             41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
             -1, -1, -1, -1};
@@ -200,12 +200,10 @@ public class Simple8 {
                 case 58:
                 case 59:
                 case 60:
-                case 61:
                     encode15(input, inputPos, output, outputPos);
                     inputPos += 1;
                     break;
                 default:
-                    // TODO Handle this as an exception? Otherwise it's eternal loop..
                     throw new RuntimeException("This compressor does not support values larger than 2^60");
             }
 

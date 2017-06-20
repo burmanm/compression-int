@@ -19,15 +19,13 @@ masks = [0x00, 0x00, 0x01, 0x03, 0x07, 0x0F, 0x1F, 0x3F, 0x7F, 0xFF, 0x3FF, 0xFF
 
 def canPackGeneration():
     for i in range(15):
-        sys.stdout.write('boolean canPack{}()'.format(i))
-        print(' {')
+        print('boolean canPack{}() {{'.format(i))
         print('return largestSetBit{}() <= {};'.format(i, bits[i]))
         print('}')
 
 def maxBitsGeneration():
     for i in range(15):
-        sys.stdout.write('int largestSetBit{}()'.format(i))
-        print(' {')
+        print('int largestSetBit{}() {{'.format(i))
         print('long mask |= iA[i];')
         for b in range(1, integers[i]):
             # This is something that the Java can probably do with SIMD?
@@ -41,8 +39,8 @@ def packGeneration(mask = True):
         if i == 8 or i == 9:
             continue
 
-        sys.stdout.write('static void encode{}(final long[] input, int startPos, final long[] output, int outputPos)'.format(i))
-        print(' {')
+        print('static void encode{}(final long[] input, int startPos, final long[] output, int outputPos) {{'
+                         ''.format(i))
         bitsLeft = 60 - bits[i]
         print('output[outputPos] |= {}L << 60;'.format(i))
         # First line should not be printed (again << 60)
@@ -61,8 +59,7 @@ def unpackGeneration():
         if i == 8 or i == 9:
             continue
 
-        sys.stdout.write('static void decode{}(final long[] input, int startPos, final long[] output, int outputPos)'.format(i))
-        print(' {')
+        print('static void decode{}(final long[] input, int startPos, final long[] output, int outputPos) {{'.format(i))
         b = 60 - bits[i]
         while b > 0:
             print('output[outputPos++] = (input[startPos] >>> {}) & {};'.format(b, masks[i]))
@@ -89,6 +86,17 @@ def switchDecodeGeneration():
         print('decode{}(input, inputPos, output, outputPos);'.format(i))
         print('outputPos += {};'.format(integers[i]))
         print('break;')
+
+def testGeneration():
+    print('@Test')
+    print('void testCorrectSizes() throws Exception {')
+
+    for i in range(2, 16):
+        arr = '{}, '.format(masks[i] - 1) * integers[i]
+        print('long[] input{} = {{ {} }};'.format(integers[i], arr[:-2]))
+        print('verifyCompression(input{}, 1);'.format(integers[i]))
+
+    print('}')
 
 # bits = [0,0,1,2,3,4,5,6,7,8,10,12,15,20,30,60]
 
@@ -156,3 +164,4 @@ packGeneration(mask = False)
 switchGeneration()
 unpackGeneration()
 switchDecodeGeneration()
+testGeneration()
