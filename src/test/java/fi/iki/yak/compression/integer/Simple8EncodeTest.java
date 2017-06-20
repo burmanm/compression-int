@@ -13,7 +13,7 @@ import fi.iki.yak.compression.integer.integer.Simple8;
 /**
  * @author Michael Burman
  */
-public class Simple8EncodeTests {
+public class Simple8EncodeTest {
 
     @Test
     void testSmallNumbers() throws Exception {
