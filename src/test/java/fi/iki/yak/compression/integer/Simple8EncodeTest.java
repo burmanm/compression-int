@@ -8,9 +8,9 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import fi.iki.yak.compression.integer.integer.Simple8;
-
 /**
+ * Tests for Simple8 and Simple8RLE implementations
+ *
  * @author Michael Burman
  */
 public class Simple8EncodeTest {
@@ -35,75 +35,6 @@ public class Simple8EncodeTest {
     void matchingBits() throws Exception {
         long[] input = {1,2,3,1,2,1,2,1,2,3,2,1,2,1,2,1,2,1,2,3,2,1,2,3,1,2,2,1,2,3,0,0,0,0,1,1,2,3,1,2,2,0,0,1,2,3,1};
         verifyCompression(input, 3);
-    }
-
-    @Test
-    void testCase0And1() throws Exception {
-
-        long[] output = new long[2];
-
-        // We should get a single word back with just selector 1
-        long[] input120 =
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-        // We should get a single word back with just selector 0
-        long[] input240 =
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0};
-
-        // We should get two words back with selector 1 and 2
-        long[] input180 =
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
-        long[] input121 =
-                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                        1};
-
-        assertEquals(1, Simple8.compress(input120, output), "Only one word was supposed to be used for compression");
-        int selector = (int) (output[0] >>> 60);
-        assertEquals(1, selector);
-        Arrays.fill(output, 0);
-
-        assertEquals(1, Simple8.compress(input240, output), "Only one word was supposed to be used for compression");
-        selector = (int) (output[0] >>> 60);
-        assertEquals(0, selector);
-        Arrays.fill(output, 0);
-
-        assertEquals(2, Simple8.compress(input180, output), "Two words are needed to compress");
-        selector = (int) (output[0] >>> 60);
-        assertEquals(1, selector);
-
-        selector = (int) (output[1] >>> 60);
-        assertEquals(2, selector);
-        Arrays.fill(output, 0);
-
-        assertEquals(2, Simple8.compress(input121, output), "Two words are needed to compress");
-        selector = (int) (output[0] >>> 60);
-        assertEquals(1, selector);
-
-        selector = (int) (output[1] >>> 60);
-        assertEquals(15, selector);
-        Arrays.fill(output, 0);
     }
 
     @Test
@@ -174,12 +105,91 @@ public class Simple8EncodeTest {
     @Test
     void correctnessTesting() throws Exception {
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        for(int i = 0; i < 50; i++) {
+        for(int i = 0; i < 20; i++) {
             ZipfDistribution zipf = new ZipfDistribution(random.nextDouble(), 1000);
 
-            long[] original = zipf.stream().limit(2500).asLongStream().toArray();
+            long[] original = zipf.stream().limit(2000).asLongStream().toArray();
             verifyCompression(original, -1);
         }
+    }
+
+    @Test
+    void testCase0And1() throws Exception {
+        long[] output = new long[2];
+
+        // We should get a single word back with just selector 1
+        long[] input120 =
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        // We should get a single word back with just selector 0
+        long[] input240 =
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0};
+
+        // We should get two words back with selector 1 and 2
+        long[] input180 =
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
+        long[] input121 =
+                {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        1};
+
+        assertEquals(1, Simple8.compress(input120, output), "Only one word was supposed to be used for compression");
+        int selector = (int) (output[0] >>> 60);
+        assertEquals(1, selector);
+        Arrays.fill(output, 0);
+
+        assertEquals(1, Simple8.compress(input240, output), "Only one word was supposed to be used for compression");
+        selector = (int) (output[0] >>> 60);
+        assertEquals(0, selector);
+        Arrays.fill(output, 0);
+
+        assertEquals(2, Simple8.compress(input180, output), "Two words are needed to compress");
+        selector = (int) (output[0] >>> 60);
+        assertEquals(1, selector);
+
+        selector = (int) (output[1] >>> 60);
+        assertEquals(2, selector);
+        Arrays.fill(output, 0);
+
+        assertEquals(2, Simple8.compress(input121, output), "Two words are needed to compress");
+        selector = (int) (output[0] >>> 60);
+        assertEquals(1, selector);
+
+        selector = (int) (output[1] >>> 60);
+        assertEquals(15, selector);
+        Arrays.fill(output, 0);
+    }
+
+    @Test
+    void testRLE() throws Exception {
+        // Typical Hawkular-Metrics status array
+        long[] input = new long[720];
+        long[] output = new long[input.length];
+        Arrays.fill(input, 0, 360, 0);
+        Arrays.fill(input, 360, 720, 1);
+
+        assertEquals(2, Simple8RLE.compress(input, output));
     }
 
     void verifyCompression(long[] input, int expectedAmount) {
@@ -187,14 +197,22 @@ public class Simple8EncodeTest {
         long[] uncompressed = new long[input.length];
 
         int amount = Simple8.compress(input, compressed);
-
         if(expectedAmount > 0) {
             assertEquals(expectedAmount, amount);
         }
 
-        // Pass amount to the decompressor
         Simple8.decompress(compressed, 0, amount, uncompressed, 0);
+        Assertions.assertArrayEquals(input, uncompressed);
 
+        Arrays.fill(compressed, 0);
+        Arrays.fill(uncompressed, 0);
+
+        amount = Simple8RLE.compress(input, compressed);
+        if(expectedAmount > 0) {
+            assertEquals(expectedAmount, amount);
+        }
+
+        Simple8RLE.decompress(compressed, 0, amount, uncompressed, 0);
         Assertions.assertArrayEquals(input, uncompressed);
     }
 }
