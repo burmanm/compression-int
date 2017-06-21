@@ -103,7 +103,6 @@ public class Simple8RLE {
                 output[outputPos] |= input[inputPos]; // No need to mask, we checked the length already
                 inputPos += runLength;
                 outputPos++;
-                System.out.printf("Encoded %d values to RLE\n", runLength);
                 continue;
             }
 
