@@ -1,0 +1,57 @@
+= 64-bit integer compression library in Java
+:source-language: java
+
+ifdef::env-github[]
+[link=https://travis-ci.org/burmanm/compression-int]
+image::https://travis-ci.org/burmanm/compression-int.svg?branch=master[Build Status,70,18]
+[link=https://maven-badges.herokuapp.com/maven-central/fi.iki.yak/compression-int]
+image::https://img.shields.io/maven-central/v/fi.iki.yak/compression-int.svg[Maven central]
+endif::[]
+
+== Introduction
+
+This library intends to provide integer compression libraries written in pure Java. All the compressors support
+values that are larger than 2^32, but not necessarily up to 2^64.
+
+Currently the provided solutions are Simple-8b and a modification to it called Simple-8bRLE, both supports values up
+to 2^60.
+
+== Usage
+
+=== Maven
+
+[source, xml]
+----
+    <dependency>
+        <groupId>fi.iki.yak</groupId>
+        <artifactId>compression-gorilla</artifactId>
+    </dependency>
+----
+
+You can find latest version from the maven logo link above.
+
+== Performance
+
+== Roadmap
+
+== Contributing
+
+File an issue and/or send a pull request.
+
+=== License
+
+....
+   Copyright 2016-2017 Michael Burman and/or other contributors.
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+....
