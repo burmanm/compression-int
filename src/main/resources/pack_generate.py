@@ -61,9 +61,11 @@ def unpackGeneration():
 
         print('static void decode{}(final long[] input, int startPos, final long[] output, int outputPos) {{'.format(i))
         b = 60 - bits[i]
+        j = 0
         while b > 0:
-            print('output[outputPos++] = (input[startPos] >>> {}) & {};'.format(b, masks[i]))
+            print('output[outputPos + {}] = (input[startPos] >>> {}) & {};'.format(j, b, masks[i]))
             b -= bits[i]
+            j += 1
         print('output[outputPos++] = input[startPos] & {}L;'.format(masks[i]))
         print(' }')
         print('')
