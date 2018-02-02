@@ -24,7 +24,7 @@ to 2^60.
 ----
     <dependency>
         <groupId>fi.iki.yak</groupId>
-        <artifactId>compression-gorilla</artifactId>
+        <artifactId>compression-int</artifactId>
     </dependency>
 ----
 
