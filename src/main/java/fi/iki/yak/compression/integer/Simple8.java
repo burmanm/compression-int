@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Michael Burman
+ * Copyright 2017-2018 Michael Burman
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package fi.iki.yak.compression.integer;
+
+import java.util.Arrays;
 
 /**
  * Implements the Simple-8b integer compression method as described in the paper by Anh et al,
@@ -536,15 +538,11 @@ public class Simple8 {
 
     // Decode functions
     private static void decode0(final long[] input, int startPos, final long[] output, int outputPos) {
-        for(int i = 0; i < 240; i++) {
-            output[outputPos+i] = 0;
-        }
+        Arrays.fill(output, outputPos, outputPos+240, 0);
     }
 
     private static void decode1(final long[] input, int startPos, final long[] output, int outputPos) {
-        for(int i = 0; i < 120; i++) {
-            output[outputPos+i] = 0;
-        }
+        Arrays.fill(output, outputPos, outputPos+120, 0);
     }
 
     private static void decode2(final long[] input, int startPos, final long[] output, int outputPos) {

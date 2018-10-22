@@ -32,7 +32,6 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.openjdk.jmh.infra.Blackhole;
 
 import fi.iki.yak.compression.integer.Simple8;
-import fi.iki.yak.compression.integer.Simple8RLE;
 
 /**
  * @author michael
@@ -55,10 +54,10 @@ public class EncodeBenchmark {
         @Setup(Level.Trial)
         public void setup() {
             ThreadLocalRandom random = ThreadLocalRandom.current();
-            input = random.longs(0, 10000).limit(10000).toArray();
+            input = random.longs(0, 100000).limit(100000).toArray();
             output = new long[input.length];
             compressed = new long[input.length];
-            amount = Simple8RLE.compress(input, compressed);
+            amount = Simple8.compress(input, compressed);
             decompressed = new long[input.length];
         }
     }
@@ -66,12 +65,18 @@ public class EncodeBenchmark {
     @Benchmark
     @OperationsPerInvocation(10000)
     public void encodingBenchmark(DataGenerator dg, Blackhole bh) {
-        bh.consume(Simple8RLE.compress(dg.input, dg.output));
+        bh.consume(Simple8.compress(dg.input, dg.output));
+    }
+
+    @Benchmark
+    @OperationsPerInvocation(10000)
+    public void encodingBenchmarkOrig(DataGenerator dg, Blackhole bh) {
+        bh.consume(Simple8.compress(dg.input, dg.output));
     }
 
     @Benchmark
     @OperationsPerInvocation(10000)
     public void decodingBenchmark(DataGenerator dg, Blackhole bh) {
-        Simple8RLE.decompress(dg.compressed, 0, dg.amount, dg.decompressed, 0);
+        Simple8.decompress(dg.compressed, 0, dg.amount, dg.decompressed, 0);
     }
 }

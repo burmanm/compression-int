@@ -18,9 +18,7 @@ public class Simple8EncodeTest {
     @Test
     void testSmallNumbers() throws Exception {
         // This sequence overflows to the next word quite often
-        long[] input = {1, 2, 3, 4, 5, 6, 7, 9, 1, 8,
-                5, 32, 5, 214, 6, 1,
-                123, 12, 0};
+        long[] input = {5, 3, 4, 2, 1, 6, 7, 9, 1, 8, 5, 32, 5, 214, 6, 1, 123, 12, 0};
 
         verifyCompression(input, 3);
     }
@@ -213,6 +211,17 @@ public class Simple8EncodeTest {
         }
 
         Simple8RLE.decompress(compressed, 0, amount, uncompressed, 0);
+        Assertions.assertArrayEquals(input, uncompressed);
+
+        Arrays.fill(compressed, 0);
+        Arrays.fill(uncompressed, 0);
+
+        amount = Simple8.compress(input, compressed);
+        if(expectedAmount > 0) {
+            assertEquals(expectedAmount, amount);
+        }
+
+        Simple8.decompress(compressed, 0, amount, uncompressed, 0);
         Assertions.assertArrayEquals(input, uncompressed);
     }
 }

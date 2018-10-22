@@ -18,10 +18,8 @@
 
   <properties>
     <java.version>1.8</java.version>
-    <junit.jupiter.version>5.0.0-M4</junit.jupiter.version>
-    <junit.platform.version>1.0.0-M4</junit.platform.version>
-    <!--<junit.vintage.version>4.12.0-M2</junit.vintage.version>-->
-    <jmh.version>1.19</jmh.version>
+    <junit.jupiter.version>5.3.1</junit.jupiter.version>
+    <jmh.version>1.21</jmh.version>
     <jar.name>benchmark</jar.name>
     <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
   </properties>
@@ -73,7 +71,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.6.1</version>
+        <version>3.8.0</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -81,19 +79,12 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.19</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>${junit.platform.version}</version>
-          </dependency>
-        </dependencies>
+        <version>2.22.1</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4.3</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -136,7 +127,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.10.4</version>
+        <version>3.0.1</version>
         <executions>
           <execution>
             <goals>
