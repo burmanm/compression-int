@@ -13,7 +13,7 @@ endif::[]
 This library intends to provide integer compression libraries written in pure Java. All the compressors support
 values that are larger than 2^32, but not necessarily up to 2^64.
 
-Currently the provided solutions are Simple-8b and a modification to it called Simple-8bRLE, both supports values up
+Currently the provided solutions are Simple-8b and a modification to it called Simple-8bRLE, both support values up
 to 2^60.
 
 == Usage
@@ -34,6 +34,8 @@ You can find latest version from the maven logo link above.
 
 == Roadmap
 
+Roadmap is managed in the issues section with potential milestones.
+
 == Contributing
 
 File an issue and/or send a pull request.
@@ -41,7 +43,7 @@ File an issue and/or send a pull request.
 === License
 
 ....
-   Copyright 2016-2017 Michael Burman and/or other contributors.
+   Copyright 2016-2018 Michael Burman and/or other contributors.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
