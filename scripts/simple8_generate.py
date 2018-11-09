@@ -46,9 +46,13 @@ def packGeneration(mask = True):
         # First line should not be printed (again << 60)
         for b in range(0, integers[i]):
             if mask is True:
-                print('output[outputPos] |= (input[startPos + {}] & {}) << {};'.format(b, masks[i], bitsLeft))
+                outline = 'output[outputPos] |= (input[startPos + {}] & {}) << {};'.format(b, masks[i], bitsLeft)
             else:
-                print('output[outputPos] |= (input[startPos + {}]) << {};'.format(b, bitsLeft))
+                outline = 'output[outputPos] |= (input[startPos + {}]) << {};'.format(b, bitsLeft)
+
+            # Remove operations that have no effect
+            outline = outline.replace(' + 0', '').replace(' << 0', '')
+            print(outline)
             bitsLeft = bitsLeft - bits[i]
         # Print last one here without shift
         print('}')
