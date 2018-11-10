@@ -79,12 +79,12 @@ class ArrayPacker(Packer):
               firstshiftstr ="" # no need
           if( firstword == secondword):
               if(firstshift + bit == 64):
-                print("  out[{0}] = (uint32_t) ( w{1}  {2} );".format(j,firstword,firstshiftstr))
+                print("  out[{0}] = (int) ( w{1}  {2} );".format(j,firstword,firstshiftstr))
               else:
-                print("  out[{0}] = (uint32_t)  ( ( w{1} {2}) {3} );".format(j,firstword,firstshiftstr,maskstr))
+                print("  out[{0}] = (int)  ( ( w{1} {2}) {3} );".format(j,firstword,firstshiftstr,maskstr))
           else:
               secondshift = (64-firstshift)
-              print("  out[{0}] = (uint32_t)  ( ( ( w{1} {2} ) | ( w{3} << {4} ) ) {5} );".format(j,firstword,firstshiftstr, firstword+1,secondshift,maskstr))
+              print("  out[{0}] = (int)  ( ( ( w{1} {2} ) | ( w{3} << {4} ) ) {5} );".format(j,firstword,firstshiftstr, firstword+1,secondshift,maskstr))
         print("}")
         print("")
 

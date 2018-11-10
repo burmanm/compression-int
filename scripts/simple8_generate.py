@@ -6,9 +6,9 @@ python generate_code.py | sed -e 's/ << 0//g' | sed -e 's/ + 0//g'
 """
 
 """
-Selector         & 0   & 1   & 2  & 3  & 4  & 5  & 6  & 7  & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 \\ \hline
-Integers         & 240 & 120 & 60 & 30 & 20 & 15 & 12 & 10 & 8 & 7 & 6  & 5  & 4  & 3  & 2  & 1  \\ \hline
-Bits per integer & 0   & 0   & 1  & 2  & 3  & 4  & 5  & 6  & 7 & 8 & 10 & 12 & 15 & 20 & 30 & 60 \\ \hline
+Selector         & 0   & 1   & 2  & 3  & 4  & 5  & 6  & 7  & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15
+Integers         & 240 & 120 & 60 & 30 & 20 & 15 & 12 & 10 & 8 & 7 & 6  & 5  & 4  & 3  & 2  & 1
+Bits per integer & 0   & 0   & 1  & 2  & 3  & 4  & 5  & 6  & 7 & 8 & 10 & 12 & 15 & 20 & 30 & 60
 Wasted bits      & 60  & 60  & 0  & 0  & 0  & 0  & 0  & 0  & 4 & 4 & 0  & 0  & 0  & 0  & 0  & 0
 """
 
@@ -43,7 +43,6 @@ def packGeneration(mask = True):
                          ''.format(i))
         bitsLeft = 60 - bits[i]
         print('output[outputPos] |= {}L << 60;'.format(i))
-        # First line should not be printed (again << 60)
         for b in range(0, integers[i]):
             if mask is True:
                 outline = 'output[outputPos] |= (input[startPos + {}] & {}) << {};'.format(b, masks[i], bitsLeft)
@@ -54,7 +53,6 @@ def packGeneration(mask = True):
             outline = outline.replace(' + 0', '').replace(' << 0', '')
             print(outline)
             bitsLeft = bitsLeft - bits[i]
-        # Print last one here without shift
         print('}')
         print('')
 
