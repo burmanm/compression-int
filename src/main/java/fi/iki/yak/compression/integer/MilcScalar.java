@@ -45,16 +45,16 @@ public class MilcScalar {
             int newTotalSpace = requiredBits * (i - startPos) + OVERHEAD; // Corresponds to c(j,i), first item only eats metadata's 80 bits
             int overHeadPerNewItem = newTotalSpace / (i+1 - startPos);
 
-            smallestOverHeadPerItem = Math.min(smallestOverHeadPerItem, overHeadPerNewItem);
-            if(smallestOverHeadPerItem == overHeadPerNewItem) {
+            if(overHeadPerNewItem < smallestOverHeadPerItem) {
                 smallestOverHeadPosition = i;
+                smallestOverHeadPerItem = overHeadPerNewItem;
             }
 
             // We check the results at the maximum cut point, which is 2 * OVERHEAD
             if((i - startPos) == (MAX_AMOUNT_PER_BLOCK - 1)) {
                 // We have to cut here
                 System.out.printf("Cut position, we selected %d items, bits per item: %d, total of %d bits\n", (smallestOverHeadPosition+1 - startPos), smallestOverHeadPerItem, (smallestOverHeadPerItem * (smallestOverHeadPosition-startPos)) + OVERHEAD);
-                int subBlockCount = findSubBlockCount(input, startPos, smallestOverHeadPosition);
+                findSubBlockCount(input, startPos, smallestOverHeadPosition, requiredBits);
                 i = smallestOverHeadPosition+1; // Start again from next item
                 startPos = i;
                 requiredBits = 0;
@@ -64,13 +64,14 @@ public class MilcScalar {
         }
         // System.out.printf("Cut position, we selected position: %d, bits per item: %d, total of %d bits\n", smallestOverHeadPosition, smallestOverHeadPerItem, (smallestOverHeadPerItem * smallestOverHeadPosition+1));
         System.out.printf("Compressing remaining %d items to next block with %d bits per item, total of %d\n", (input.length - startPos), requiredBits, (requiredBits * (input.length - 1 - startPos) + OVERHEAD));
-        int subBlockCount = findSubBlockCount(input, startPos, input.length);
+        findSubBlockCount(input, startPos, input.length, requiredBits);
     }
 
     /**
-     * Find optimal static partitioning subblock count for compression purposes.
+     * Find optimal static partitioning subblock count for compression purposes. Last subblock takes all the remaining items
+     * if the size wasn't even
      */
-    static int findSubBlockCount(int[] input, int startPos, int endPos) {
+    static int findSubBlockCount(int[] input, int startPos, int endPos, final int bits) {
         int itemCount = endPos - startPos;
         int maxBlockCount = itemCount / 4; // minCount = 2
 
@@ -83,15 +84,15 @@ public class MilcScalar {
         int blocks = 2; // min count
         // The search for static block counts is from 2 to itemCount / 4
         int previousTotalBits = Integer.MAX_VALUE;
+        int maxAmountOfBits = 0;
         for(int i = 2; i < maxBlockCount; i++) {
             // Divide the range to i parts and check how much space this complexity eats ( + i * 16)
             int itemsPerSubBlock = itemCount / i; // Round down 
-            int totalBits = 0;
             int offset = input[startPos]; // This is the first block's offset we use
+            int subBlockBits = 0;
 
             for(int j = 0; j < itemCount; j++) {
-                // Go through every element..
-                totalBits += bits(input[startPos + j] - offset);
+                subBlockBits = Math.max(bits(input[startPos + j] - offset), subBlockBits);
                 if(j % itemsPerSubBlock == 0) {
                     // Switch block..
                     if(j + 1 < itemCount) {
@@ -101,19 +102,19 @@ public class MilcScalar {
                 }
             }
 
-            totalBits += SUB_BLOCK_OVERHEAD*i;
-            // System.out.printf("SubCount %d would result in total of %d bits\n", i, totalBits);
+            int totalBits = subBlockBits * (itemCount - i);
+            totalBits += i * bits; // mini skip pointers
+            totalBits += SUB_BLOCK_OVERHEAD; // block overhead
             if(totalBits < previousTotalBits) {
                 blocks = i;
                 previousTotalBits = totalBits;
+                maxAmountOfBits = subBlockBits;
             }
         }
-        System.out.printf("Selected subBlockCount of %d for a total of %d bits\n", blocks, previousTotalBits);
+        System.out.printf("Selected subBlockCount of %d with %d bits per item for a total of %d bits\n", blocks, maxAmountOfBits, previousTotalBits);
 
         return maxBlockCount;
     }
-
-    // static void encode(int[] input, int startPos, int endPos)
 
     public static void main(String[] args) {
         // This example is from the paper in their dynamic partition part, should result in two partitions, 108 and 148 items
